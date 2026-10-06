@@ -16,7 +16,7 @@ from Task 1 and Task 3.
 
 Write down where it hurts. That is the deliverable.
 """
-import argparse, json, os, platform, time, tracemalloc
+import argparse, json, os, platform, time, tracemalloc, random
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "out")
@@ -27,6 +27,9 @@ def machine():
         "platform": platform.platform(),
         "processor": platform.processor() or platform.machine(),
         "python": platform.python_version(),
+        "cpu": "AMD Ryzen 7 260 w/ Radeon 780M Graphics",
+        "ram_bytes": 33591296000,
+        "background": "Codex/ChatGPT, Chrome, Slack observed; background load not isolated",
     }
 
 
@@ -58,7 +61,11 @@ def main():
 
     rows = []
     for n in [int(x) for x in a.sizes.split(",")]:
-        docs = bench.build()[:n]
+        # bench.build() contains only 2,120 documents: slicing it silently caps n.
+        # Generate exactly n sets, with fixed seed and the same vocabulary/size.
+        rng = random.Random(bench.SEED)
+        docs = [set(rng.sample(range(bench.VOCAB), bench.SHINGLES)) for _ in range(n)]
+        assert len(docs) == n
         sim = bench.Counter()
         _, t_brute, m_brute = timed(BruteForce(a.threshold).find, docs, sim)
         c_brute = sim.calls

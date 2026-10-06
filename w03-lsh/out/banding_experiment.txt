@@ -1,0 +1,2 @@
+step too high: 120 hashes, 12 bands, 10 rows
+  high-step    comparisons         61   recall  50.4%   precision 100.0%     0.93s

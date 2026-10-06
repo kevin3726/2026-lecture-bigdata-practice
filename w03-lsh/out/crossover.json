@@ -1,0 +1,75 @@
+{
+  "runs": [
+    {
+      "n": 125,
+      "brute_s": 0.03960200003348291,
+      "brute_calls": 7750,
+      "brute_peak_bytes": 6672,
+      "lsh_s": 1.6302509000524879,
+      "lsh_calls": 0,
+      "lsh_peak_bytes": 1035702
+    },
+    {
+      "n": 250,
+      "brute_s": 0.1734821000136435,
+      "brute_calls": 31125,
+      "brute_peak_bytes": 6672,
+      "lsh_s": 2.1790354000404477,
+      "lsh_calls": 0,
+      "lsh_peak_bytes": 1449676
+    },
+    {
+      "n": 500,
+      "brute_s": 0.7270645000971854,
+      "brute_calls": 124750,
+      "brute_peak_bytes": 6736,
+      "lsh_s": 2.350447300123051,
+      "lsh_calls": 0,
+      "lsh_peak_bytes": 2124260
+    },
+    {
+      "n": 1000,
+      "brute_s": 2.979803299997002,
+      "brute_calls": 499500,
+      "brute_peak_bytes": 6736,
+      "lsh_s": 2.508895799983293,
+      "lsh_calls": 1,
+      "lsh_peak_bytes": 3257952
+    },
+    {
+      "n": 2000,
+      "brute_s": 11.030597600154579,
+      "brute_calls": 1999000,
+      "brute_peak_bytes": 6736,
+      "lsh_s": 3.8267236999236047,
+      "lsh_calls": 1,
+      "lsh_peak_bytes": 5185668
+    },
+    {
+      "n": 4000,
+      "brute_s": 59.22852070000954,
+      "brute_calls": 7998000,
+      "brute_peak_bytes": 6736,
+      "lsh_s": 5.628745099995285,
+      "lsh_calls": 4,
+      "lsh_peak_bytes": 8915212
+    },
+    {
+      "n": 8000,
+      "brute_s": 250.65516699990258,
+      "brute_calls": 31996000,
+      "brute_peak_bytes": 6736,
+      "lsh_s": 13.540987299988046,
+      "lsh_calls": 16,
+      "lsh_peak_bytes": 16417396
+    }
+  ],
+  "machine": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "AMD64 Family 25 Model 117 Stepping 2, AuthenticAMD",
+    "python": "3.12.14",
+    "cpu": "AMD Ryzen 7 260 w/ Radeon 780M Graphics",
+    "ram_bytes": 33591296000,
+    "background": "Codex/ChatGPT, Chrome, Slack observed; background load not isolated"
+  }
+}

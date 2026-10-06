@@ -60,8 +60,30 @@ class YourFinder:
     You may reuse your Task 1 code.
     """
 
-    def __init__(self, threshold):
-        raise NotImplementedError("write your finder")
+    def __init__(self, threshold, hashes=120, bands=30):
+        self.threshold = threshold
+        self.hashes = hashes
+        self.bands = bands
 
     def find(self, docs, similarity):
-        raise NotImplementedError
+        import random
+        from task1_minhash import lsh_candidates
+        rng = random.Random(246)
+        prime = 4294967311
+        coefficients = [(rng.randrange(1, prime), rng.randrange(prime))
+                        for _ in range(self.hashes)]
+        # Visit each distinct shingle once; distribute its hash values to docs.
+        postings = {}
+        for i, doc in enumerate(docs):
+            for shingle in doc:
+                postings.setdefault(shingle, []).append(i)
+        signatures = [[float('inf')] * self.hashes for _ in docs]
+        for shingle, owners in postings.items():
+            values = [(a * shingle + b) % prime for a, b in coefficients]
+            for i in owners:
+                sig = signatures[i]
+                for k, value in enumerate(values):
+                    if value < sig[k]:
+                        sig[k] = value
+        return {(i, j) for i, j in sorted(lsh_candidates(signatures, self.bands))
+                if similarity(docs[i], docs[j]) >= self.threshold}

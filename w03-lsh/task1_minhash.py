@@ -30,7 +30,8 @@ BOOK_HASHES = [lambda r: (r + 1) % 5, lambda r: (3 * r + 1) % 5]
 
 def jaccard(a, b):
     """|a and b| / |a or b|. Empty union is 0, not an error."""
-    raise NotImplementedError("jaccard similarity")
+    union = a | b
+    return len(a & b) / len(union) if union else 0.0
 
 
 def minhash_signatures(columns, hashes, n_rows):
@@ -48,7 +49,15 @@ def minhash_signatures(columns, hashes, n_rows):
     written something correct that does not survive a dataset that does not fit
     in memory, and not fitting in memory is what this course is about.
     """
-    raise NotImplementedError("signature matrix")
+    signatures = [[float('inf')] * len(hashes) for _ in columns]
+    for row in range(n_rows):
+        values = [h(row) for h in hashes]
+        for column, members in enumerate(columns):
+            if row in members:
+                for k, value in enumerate(values):
+                    if value < signatures[column][k]:
+                        signatures[column][k] = value
+    return signatures
 
 
 def lsh_candidates(signatures, bands):
@@ -60,7 +69,26 @@ def lsh_candidates(signatures, bands):
     The signature length must divide evenly by `bands`, or you have to decide
     what to do with the remainder. Say what you decided.
     """
-    raise NotImplementedError("LSH candidate pairs")
+    if bands <= 0:
+        raise ValueError('bands must be positive')
+    if not signatures:
+        return set()
+    length = len(signatures[0])
+    if not length or length % bands or any(len(s) != length for s in signatures):
+        raise ValueError('equal, nonempty signatures must divide evenly into bands')
+    width = length // bands
+    pairs = set()
+    for band in range(bands):
+        buckets = {}
+        for i, signature in enumerate(signatures):
+            # Empty documents have no minhash value and should not collide.
+            if all(v == float('inf') for v in signature):
+                continue
+            key = tuple(signature[band * width:(band + 1) * width])
+            bucket = buckets.setdefault(key, [])
+            pairs.update((j, i) for j in bucket)
+            bucket.append(i)
+    return pairs
 
 
 # ------------------------------------------------------------------- harness
