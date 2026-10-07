@@ -23,7 +23,10 @@ OUT = os.path.join(HERE, "out")
 def machine():
     return {"platform": platform.platform(),
             "processor": platform.processor() or platform.machine(),
-            "python": platform.python_version()}
+            "python": platform.python_version(),
+            "cpu": "AMD Ryzen 7 260 w/ Radeon 780M Graphics",
+            "ram_bytes": 33591296000,
+            "background": "Chrome, Codex/ChatGPT, Windows Defender, Explorer observed; load not isolated"}
 
 
 def stream(n, distinct_ratio=0.4, seed=246):

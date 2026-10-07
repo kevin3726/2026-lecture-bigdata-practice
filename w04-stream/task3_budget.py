@@ -17,7 +17,7 @@ The whole point of this structure is that "no" means no. A filter that gets a
 better score by occasionally forgetting something it was given has not improved
 anything, it has broken the contract.
 """
-import hashlib
+import hashlib, sys
 
 
 class NaiveFilter:
@@ -64,14 +64,33 @@ class YourFilter:
     observation.md asks.
     """
 
+    __slots__ = ('bits',)
+
     def __init__(self, n_bits, seed=246):
-        raise NotImplementedError("write your filter")
+        # Account for the instance, bytearray header, seed, and actual buffer.
+        # The first eight buffer bytes store seed; remaining bytes are bits.
+        overhead = sys.getsizeof(self) + sys.getsizeof(bytearray(1)) - 1
+        buffer_bytes = n_bits // 8 - overhead
+        if buffer_bytes <= 8:
+            raise ValueError('budget is too small for object overhead and seed')
+        self.bits = bytearray(buffer_bytes)
+        self.bits[:8] = (seed % (1 << 64)).to_bytes(8, 'little')
+
+    def _positions(self, item):
+        # k ~= (m/n) ln(2) = 6.93 -> 7 for the declared 10 bits/item workload.
+        # Modulo the usable bit count, excluding the persistent seed bytes.
+        m = (len(self.bits) - 8) * 8
+        digest = hashlib.shake_256(self.bits[:8] + b'\0' + str(item).encode()).digest(56)
+        for i in range(7):
+            yield int.from_bytes(digest[8*i:8*i+8], 'little') % m
 
     def add(self, item):
-        raise NotImplementedError
+        for p in self._positions(item):
+            self.bits[8 + p // 8] |= 1 << (p % 8)
 
     def __contains__(self, item):
-        raise NotImplementedError
+        return all(self.bits[8 + p // 8] & (1 << (p % 8))
+                   for p in self._positions(item))
 
     def memory_bits(self):
-        raise NotImplementedError
+        return 8 * (sys.getsizeof(self) + sys.getsizeof(self.bits))

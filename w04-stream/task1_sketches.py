@@ -13,7 +13,19 @@ approximating.
 
     python3 task1_sketches.py --verify
 """
-import argparse, random
+import argparse, random, hashlib, math, statistics
+
+try:
+    import numpy as np
+except ImportError:
+    np = None  # The same algorithm also runs with the standard library only.
+
+
+def hash_positions(item, m, k, seed):
+    """Deterministic pseudorandom 64-bit hashes, independent of Python hash()."""
+    digest = hashlib.shake_256(seed + b'\0' + str(item).encode()).digest(8 * k)
+    for i in range(k):
+        yield int.from_bytes(digest[8*i:8*i+8], 'little') % m
 
 
 class BloomFilter:
@@ -28,13 +40,19 @@ class BloomFilter:
     """
 
     def __init__(self, m, k, seed=246):
-        raise NotImplementedError("write the Bloom filter")
+        if m <= 0 or k <= 0:
+            raise ValueError('m and k must be positive')
+        self.m, self.k = m, k
+        self.seed = str(seed).encode()
+        self.bits = bytearray((m + 7) // 8)
 
     def add(self, item):
-        raise NotImplementedError
+        for position in hash_positions(item, self.m, self.k, self.seed):
+            self.bits[position // 8] |= 1 << (position % 8)
 
     def __contains__(self, item):
-        raise NotImplementedError
+        return all(self.bits[p // 8] & (1 << (p % 8))
+                   for p in hash_positions(item, self.m, self.k, self.seed))
 
     def expected_fp_rate(self, n_inserted):
         """The textbook's predicted false-positive rate after n insertions.
@@ -42,7 +60,9 @@ class BloomFilter:
         §4.4.2 derives it. Return the number, do not measure it - the harness
         measures separately and compares the two.
         """
-        raise NotImplementedError
+        if n_inserted < 0:
+            raise ValueError('n_inserted cannot be negative')
+        return (1 - math.exp(-self.k * n_inserted / self.m)) ** self.k
 
 
 def flajolet_martin(stream, n_hashes=64, seed=246):
@@ -67,7 +87,65 @@ def flajolet_martin(stream, n_hashes=64, seed=246):
 
     Return your estimate as a float.
     """
-    raise NotImplementedError("write Flajolet-Martin")
+    registers, count = fm_registers(stream, n_hashes, seed)
+    return combine_fm(registers)['grouped_log_mean'] if count else 0.0
+
+
+def fm_registers(stream, n_hashes=64, seed=246):
+    """One pass, bounded registers and up to 256 hash summaries; no item cache."""
+    if n_hashes <= 0:
+        raise ValueError('n_hashes must be positive')
+    prefix = str(seed).encode() + b'\0'
+    registers = [0] * n_hashes
+    count = 0
+    if np is None:
+        for item in stream:
+            digest = hashlib.shake_256(prefix + str(item).encode()).digest(8*n_hashes)
+            count += 1
+            for i in range(n_hashes):
+                value = int.from_bytes(digest[8*i:8*i+8], 'little')
+                zeros = (value & -value).bit_length() - 1 if value else 64
+                registers[i] = max(registers[i], zeros)
+        return registers, count
+
+    # NumPy batches accelerate identical trailing-zero calculations. The batch
+    # limit is fixed and does not grow with stream length. Import is outside
+    # task2's measurement, just as imported Python module code is.
+    maxima = np.zeros(n_hashes, dtype=np.uint8)
+    batch = []
+
+    def flush():
+        values = np.frombuffer(b''.join(batch), dtype='<u8').reshape(-1, n_hashes)
+        lowbits = values & (~values + np.uint64(1))
+        # Each nonzero lowbit is exactly a power of two, so log2 is exact here.
+        zeros = np.log2(np.maximum(lowbits, np.uint64(1))).astype(np.uint8)
+        zeros[values == 0] = 64
+        np.maximum(maxima, zeros.max(axis=0), out=maxima)
+        batch.clear()
+
+    for item in stream:
+        batch.append(hashlib.shake_256(prefix + str(item).encode()).digest(8*n_hashes))
+        count += 1
+        if len(batch) == 256:
+            flush()
+    if batch:
+        flush()
+    return maxima.tolist(), count
+
+
+def combine_fm(registers):
+    """Expose alternative rules so their outlier sensitivity can be measured."""
+    raw = [2.0 ** r for r in registers]
+    groups = [registers[i:i+8] for i in range(0, len(registers), 8)]
+    return {
+        'raw_mean': statistics.mean(raw),
+        'raw_median': statistics.median(raw),
+        'grouped_raw_mean': statistics.median(
+            statistics.mean(2.0 ** r for r in group) for group in groups),
+        # Average in log space before exponentiating, then take the median.
+        'grouped_log_mean': statistics.median(2.0 ** statistics.mean(group)
+                                              for group in groups),
+    }
 
 
 def reservoir_sample(stream, k, seed=246):
@@ -78,7 +156,18 @@ def reservoir_sample(stream, k, seed=246):
 
     Return a list of k items (or fewer if the stream was shorter).
     """
-    raise NotImplementedError("write reservoir sampling")
+    if k < 0:
+        raise ValueError('k cannot be negative')
+    rng = random.Random(seed)
+    sample = []
+    for seen, item in enumerate(stream, start=1):
+        if seen <= k:
+            sample.append(item)
+        elif k:
+            slot = rng.randrange(seen)
+            if slot < k:
+                sample[slot] = item
+    return sample
 
 
 # ------------------------------------------------------------------- harness

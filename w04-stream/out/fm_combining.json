@@ -1,0 +1,15 @@
+{
+  "true_distinct": 19953,
+  "estimates": {
+    "raw_mean": 60064.0,
+    "raw_median": 16384.0,
+    "grouped_raw_mean": 66944.0,
+    "grouped_log_mean": 18675.42403209608
+  },
+  "ratios": {
+    "raw_mean": 3.0102741442389616,
+    "raw_median": 0.8211296546885181,
+    "grouped_raw_mean": 3.3550844484538667,
+    "grouped_log_mean": 0.9359707328269474
+  }
+}

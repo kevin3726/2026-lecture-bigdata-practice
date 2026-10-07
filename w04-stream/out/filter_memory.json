@@ -1,0 +1,12 @@
+{
+  "budget_bits": 80000,
+  "reported_bits": 80000,
+  "instance_bytes": 40,
+  "bytearray_bytes": 9960,
+  "seed_bytes_in_buffer": 8,
+  "usable_filter_bits": 79160,
+  "hash_count": 7,
+  "ideal_k": 6.931471805599453,
+  "ideal_floor": 0.008192549468178961,
+  "actual_prediction": 0.008621707872845977
+}

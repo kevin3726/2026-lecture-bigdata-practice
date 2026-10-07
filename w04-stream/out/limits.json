@@ -1,0 +1,62 @@
+{
+  "runs": [
+    {
+      "n": 100000,
+      "true_distinct": 36702,
+      "exact_s": 0.20168900000862777,
+      "exact_peak_bytes": 3925612,
+      "fm_estimate": 44751.55153568828,
+      "fm_s": 0.8878659000620246,
+      "fm_peak_bytes": 737358,
+      "fm_ratio": 1.219321877164413
+    },
+    {
+      "n": 400000,
+      "true_distinct": 146970,
+      "exact_s": 0.8119711000472307,
+      "exact_peak_bytes": 11591308,
+      "fm_estimate": 220435.94988026973,
+      "fm_s": 3.293145100120455,
+      "fm_peak_bytes": 736993,
+      "fm_ratio": 1.4998703808958953
+    },
+    {
+      "n": 1600000,
+      "true_distinct": 587625,
+      "exact_s": 3.4136570000555366,
+      "exact_peak_bytes": 46647606,
+      "fm_estimate": 716024.8245710125,
+      "fm_s": 13.100152800092474,
+      "fm_peak_bytes": 736993,
+      "fm_ratio": 1.2185064021629655
+    },
+    {
+      "n": 6400000,
+      "true_distinct": 2349909,
+      "exact_s": 14.085675799986348,
+      "exact_peak_bytes": 188287586,
+      "fm_estimate": 2493948.0796421864,
+      "fm_s": 51.11069510015659,
+      "fm_peak_bytes": 736994,
+      "fm_ratio": 1.0612955989539112
+    },
+    {
+      "n": 32000000,
+      "true_distinct": 11748933,
+      "exact_s": 92.55483419983648,
+      "exact_peak_bytes": 1330085027,
+      "fm_estimate": 14746337.849027682,
+      "fm_s": 320.41125539992936,
+      "fm_peak_bytes": 737361,
+      "fm_ratio": 1.2551214522227407
+    }
+  ],
+  "machine": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "AMD64 Family 25 Model 117 Stepping 2, AuthenticAMD",
+    "python": "3.12.14",
+    "cpu": "AMD Ryzen 7 260 w/ Radeon 780M Graphics",
+    "ram_bytes": 33591296000,
+    "background": "Chrome, Codex/ChatGPT, Windows Defender, Explorer observed; load not isolated"
+  }
+}
