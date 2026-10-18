@@ -1,0 +1,10 @@
+{
+  "edge_cases": "passed: empty, all dangling, beta=0, cap vs convergence, target-only node",
+  "random_graph_dense_checks": 18,
+  "worst_random_difference": 1.5543122344752192e-15,
+  "original_harness_unchanged": {
+    "bench.py": true,
+    "test_tasks.py": true,
+    "check.py": true
+  }
+}

@@ -23,7 +23,10 @@ OUT = os.path.join(HERE, "out")
 def machine():
     return {"platform": platform.platform(),
             "processor": platform.processor() or platform.machine(),
-            "python": platform.python_version()}
+            "python": platform.python_version(),
+            "cpu": "AMD Ryzen 7 260 w/ Radeon 780M Graphics",
+            "ram_bytes": 33591296000,
+            "background": "Chrome, Codex/ChatGPT, Explorer, Defender, Paint observed; load not isolated"}
 
 
 def main():
@@ -32,6 +35,7 @@ def main():
     p.add_argument("--nodes", type=int, default=None,
                    help="graph size; default is the harness graph")
     p.add_argument("--tol", type=float, default=1e-10)
+    p.add_argument("--max-iter", type=int, default=5000)
     a = p.parse_args()
     os.makedirs(OUT, exist_ok=True)
 
@@ -45,12 +49,15 @@ def main():
     rows = []
     for beta in [float(x) for x in a.betas.split(",")]:
         t0 = time.perf_counter()
-        ranks = pagerank(graph, beta=beta, iterations=500, tol=a.tol)
+        ranks = pagerank(graph, beta=beta, iterations=a.max_iter, tol=a.tol)
         elapsed = time.perf_counter() - t0
         iters = getattr(pagerank, "iterations", None)
         top = sorted(ranks.items(), key=lambda kv: -kv[1])[:10]
         rows.append({"beta": beta, "nodes": len(graph), "tol": a.tol,
                      "iterations": iters, "seconds": elapsed,
+                     "max_iter": a.max_iter, "final_delta": pagerank.delta,
+                     "converged": pagerank.converged,
+                     "rank_sum": sum(ranks.values()),
                      "top10": [k for k, _ in top]})
         print(f"  beta {beta:<5}  {str(iters):>4} iterations  {elapsed:>7.3f}s   "
               f"top: {', '.join(k for k, _ in top[:3])}")

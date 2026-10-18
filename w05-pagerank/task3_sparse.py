@@ -86,10 +86,15 @@ class YourPageRank:
     """
 
     def __init__(self, beta=0.85, tol=1e-10, max_iter=100):
-        raise NotImplementedError("write your PageRank")
+        self.beta, self.tol, self.max_iter = beta, tol, max_iter
+        self._peak_floats = 0
+        self.iterations = 0
 
     def run(self, graph):
-        raise NotImplementedError
+        from task1_pagerank import sparse_power
+        ranks, self.iterations, self.delta, self._peak_floats = sparse_power(
+            graph, self.beta, self.max_iter, self.tol)
+        return ranks
 
     def memory_floats(self):
-        raise NotImplementedError
+        return self._peak_floats

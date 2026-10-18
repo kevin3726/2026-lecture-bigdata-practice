@@ -41,7 +41,11 @@ def pagerank(graph, beta=0.85, iterations=100, tol=1e-10):
     you should call it converged. Return the ranks, and set `pagerank.iterations`
     to how many you actually used, because Task 2 measures that.
     """
-    raise NotImplementedError("implement PageRank")
+    ranks, used, delta, peak = sparse_power(graph, beta, iterations, tol)
+    pagerank.iterations = used
+    pagerank.delta = delta
+    pagerank.converged = delta < tol
+    return ranks
 
 
 def pagerank_no_teleport(graph, iterations=100):
@@ -50,7 +54,54 @@ def pagerank_no_teleport(graph, iterations=100):
     It exists so you can watch both failures happen rather than take them on
     trust. The harness checks that it really does fail.
     """
-    raise NotImplementedError("implement the broken version")
+    nodes = list(dict.fromkeys([*graph, *(w for outs in graph.values() for w in outs)]))
+    if not nodes:
+        return {}
+    ranks = dict.fromkeys(nodes, 1.0 / len(nodes))
+    for _ in range(iterations):
+        new = dict.fromkeys(nodes, 0.0)
+        for v in nodes:
+            outs = graph.get(v, [])
+            if outs:
+                share = ranks[v] / len(outs)
+                for w in outs:
+                    new[w] += share
+            # No redistribution: dead-end mass really disappears here.
+        ranks = new
+    return ranks
+
+
+def sparse_power(graph, beta=0.85, max_iter=100, tol=1e-10):
+    """O(n+e) representation; old/new rank vectors contain 2n floats."""
+    if not 0 <= beta < 1 or max_iter < 1 or tol <= 0:
+        raise ValueError("require 0 <= beta < 1, max_iter >= 1, tol > 0")
+    nodes = list(dict.fromkeys([*graph, *(w for outs in graph.values() for w in outs)]))
+    n = len(nodes)
+    if not n:
+        return {}, 0, 0.0, 0
+    index = {v: i for i, v in enumerate(nodes)}
+    # Indices and degrees are integers, not floating point edge weights.
+    adjacency = [[index[w] for w in graph.get(v, [])] for v in nodes]
+    dangling = [i for i, outs in enumerate(adjacency) if not outs]
+    ranks = [1.0 / n] * n
+    delta = float("inf")
+    for used in range(1, max_iter + 1):
+        dead_mass = sum(ranks[i] for i in dangling)
+        base = (1 - beta + beta * dead_mass) / n
+        new = [base] * n
+        for i, outs in enumerate(adjacency):
+            if outs:
+                share = beta * ranks[i] / len(outs)
+                for j in outs:
+                    new[j] += share
+        delta = sum(abs(a - b) for a, b in zip(new, ranks))
+        ranks = new
+        if delta < tol:
+            break
+    # Conservative upper bound: two vectors plus parameters and temporaries.
+    # Output dict reuses rank float objects. Python containers/integers are not
+    # represented by this float-count metric, and are explicitly documented.
+    return dict(zip(nodes, ranks)), used, delta, 2 * n + 32
 
 
 # ------------------------------------------------------------------- harness
