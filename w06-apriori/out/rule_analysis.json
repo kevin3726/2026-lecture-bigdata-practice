@@ -1,0 +1,16 @@
+{
+  "highest_confidence_rule": {
+    "from": 1468,
+    "to": 0,
+    "support_pair": 52,
+    "support_from": 62,
+    "support_to": 13080,
+    "confidence": 0.8387096774193549,
+    "reverse_confidence": 0.003975535168195718,
+    "lift": 1.2824306994179737
+  },
+  "frequent_items_at_50": 1849,
+  "all_possible_pairs": 1999000,
+  "survivor_possible_pairs": 1708476,
+  "observed_pair_counters": 820259
+}

@@ -21,7 +21,10 @@ OUT = os.path.join(HERE, "out")
 def machine():
     return {"platform": platform.platform(),
             "processor": platform.processor() or platform.machine(),
-            "python": platform.python_version()}
+            "python": platform.python_version(),
+            "cpu": "AMD Ryzen 7 260 w/ Radeon 780M Graphics",
+            "ram_bytes": 33591296000,
+            "background": "Chrome, Codex/ChatGPT observed; background load not isolated"}
 
 
 def main():
@@ -46,7 +49,8 @@ def main():
 
         row = {"support": support, "frequent_pairs": len(pairs),
                "peak_counters": algo.peak_counters, "seconds": elapsed,
-               "peak_bytes": peak_bytes}
+               "peak_bytes": peak_bytes,
+               "items": bench.ITEMS, "baskets": len(baskets)}
         rows.append(row)
         print(f"  support {support:>5}   pairs {len(pairs):>7,}   "
               f"counters {algo.peak_counters:>10,}   "

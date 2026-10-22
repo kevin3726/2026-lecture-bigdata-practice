@@ -1,0 +1,80 @@
+{
+  "runs": [
+    {
+      "baskets": 500,
+      "support": 50,
+      "plain": {
+        "seconds": 0.003017999930307269,
+        "peak_bytes": 110824,
+        "peak_counters": 136,
+        "frequent_pairs": 12
+      },
+      "pcy": {
+        "seconds": 0.9297616999829188,
+        "peak_bytes": 4594735,
+        "peak_counters": 12,
+        "frequent_pairs": 12
+      },
+      "bucket_array_bytes": 4194384,
+      "bitmap_bytes": 131129,
+      "frequent_buckets": 12
+    },
+    {
+      "baskets": 2000,
+      "support": 50,
+      "plain": {
+        "seconds": 0.05507870006840676,
+        "peak_bytes": 721431,
+        "peak_counters": 6228,
+        "frequent_pairs": 179
+      },
+      "pcy": {
+        "seconds": 1.8047452999744564,
+        "peak_bytes": 4546210,
+        "peak_counters": 181,
+        "frequent_pairs": 179
+      },
+      "bucket_array_bytes": 4194384,
+      "bitmap_bytes": 131129,
+      "frequent_buckets": 180
+    },
+    {
+      "baskets": 5000,
+      "support": 50,
+      "plain": {
+        "seconds": 0.4907929999753833,
+        "peak_bytes": 6376292,
+        "peak_counters": 50168,
+        "frequent_pairs": 823
+      },
+      "pcy": {
+        "seconds": 3.7091229999205098,
+        "peak_bytes": 4572090,
+        "peak_counters": 904,
+        "frequent_pairs": 823
+      },
+      "bucket_array_bytes": 4194384,
+      "bitmap_bytes": 131129,
+      "frequent_buckets": 851
+    },
+    {
+      "baskets": 20000,
+      "support": 50,
+      "plain": {
+        "seconds": 4.685446499963291,
+        "peak_bytes": 102175892,
+        "peak_counters": 820259,
+        "frequent_pairs": 6397
+      },
+      "pcy": {
+        "seconds": 18.31303319998551,
+        "peak_bytes": 4677258,
+        "peak_counters": 12881,
+        "frequent_pairs": 6397
+      },
+      "bucket_array_bytes": 4194384,
+      "bitmap_bytes": 131129,
+      "frequent_buckets": 6946
+    }
+  ]
+}

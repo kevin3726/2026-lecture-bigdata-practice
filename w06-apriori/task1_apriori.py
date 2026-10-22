@@ -14,6 +14,7 @@ smaller second pass, and the whole chapter is consequences of that trade.
     python3 task1_apriori.py --verify
 """
 import argparse
+from collections import Counter
 from itertools import combinations
 
 # Small enough to check by hand. support threshold 3 unless stated.
@@ -30,7 +31,12 @@ BASKETS = [
 
 def frequent_singletons(baskets, support):
     """Items appearing in at least `support` baskets. Return {item: count}."""
-    raise NotImplementedError("pass one")
+    if support < 1:
+        raise ValueError("support must be at least 1")
+    counts = Counter()
+    for basket in baskets:
+        counts.update(set(basket))  # Count baskets, not repeated occurrences.
+    return {item: count for item, count in counts.items() if count >= support}
 
 
 def frequent_pairs(baskets, support):
@@ -44,7 +50,14 @@ def frequent_pairs(baskets, support):
     A-Priori exists to avoid, and it will pass this harness while failing the
     point. Task 3 measures whether you actually did it.
     """
-    raise NotImplementedError("pass two")
+    if iter(baskets) is baskets:
+        baskets = list(baskets)  # Two passes require a replayable input.
+    frequent = set(frequent_singletons(baskets, support))
+    counts = Counter()
+    for basket in baskets:
+        items = sorted(set(basket) & frequent)
+        counts.update(frozenset(pair) for pair in combinations(items, 2))
+    return {pair: count for pair, count in counts.items() if count >= support}
 
 
 def association_rules(baskets, support, min_confidence):
@@ -60,7 +73,21 @@ def association_rules(baskets, support, min_confidence):
     rule with high confidence and lift near 1 tells you nothing - the consequent
     was common anyway - and §6.1.3 is about why that matters more than it looks.
     """
-    raise NotImplementedError("rules")
+    if not 0 <= min_confidence <= 1:
+        raise ValueError("min_confidence must lie in [0, 1]")
+    if iter(baskets) is baskets:
+        baskets = list(baskets)
+    singles = frequent_singletons(baskets, support)
+    pairs = frequent_pairs(baskets, support)
+    rules = []
+    for pair, count in pairs.items():
+        a, b = sorted(pair)
+        for source, target in ((a, b), (b, a)):
+            confidence = count / singles[source]
+            if confidence >= min_confidence:
+                lift = confidence / (singles[target] / len(baskets))
+                rules.append((source, target, confidence, lift))
+    return sorted(rules, key=lambda r: (-r[2], r[0], r[1]))
 
 
 # ------------------------------------------------------------------- harness

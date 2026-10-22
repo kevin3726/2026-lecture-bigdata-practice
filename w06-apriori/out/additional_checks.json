@@ -1,0 +1,8 @@
+{
+  "random_pcy_checks_including_full_collision": 120,
+  "apriori_random_datasets": 40,
+  "counts_match_not_just_keys": true,
+  "asymmetric_confidence_and_lift": "passed",
+  "pruning_before_pair_enumeration": "passed",
+  "duplicate_item_and_empty_input": "passed"
+}

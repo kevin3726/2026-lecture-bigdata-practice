@@ -1,0 +1,93 @@
+{
+  "runs": [
+    {
+      "support": 400,
+      "frequent_pairs": 249,
+      "peak_counters": 10585,
+      "seconds": 0.5565293999388814,
+      "peak_bytes": 1058087,
+      "items": 2000,
+      "baskets": 20000
+    },
+    {
+      "support": 200,
+      "frequent_pairs": 776,
+      "peak_counters": 58626,
+      "seconds": 1.1054299999959767,
+      "peak_bytes": 6383220,
+      "items": 2000,
+      "baskets": 20000
+    },
+    {
+      "support": 100,
+      "frequent_pairs": 2244,
+      "peak_counters": 273701,
+      "seconds": 1.945480399997905,
+      "peak_bytes": 26391580,
+      "items": 2000,
+      "baskets": 20000
+    },
+    {
+      "support": 50,
+      "frequent_pairs": 6397,
+      "peak_counters": 820259,
+      "seconds": 4.250323900021613,
+      "peak_bytes": 102173692,
+      "items": 2000,
+      "baskets": 20000
+    },
+    {
+      "support": 25,
+      "frequent_pairs": 17045,
+      "peak_counters": 893456,
+      "seconds": 4.850607899948955,
+      "peak_bytes": 102173436,
+      "items": 2000,
+      "baskets": 20000
+    },
+    {
+      "support": 12,
+      "frequent_pairs": 43116,
+      "peak_counters": 893456,
+      "seconds": 5.684737200033851,
+      "peak_bytes": 102718732,
+      "items": 2000,
+      "baskets": 20000
+    },
+    {
+      "support": 6,
+      "frequent_pairs": 101938,
+      "peak_counters": 893456,
+      "seconds": 6.360717399977148,
+      "peak_bytes": 119356444,
+      "items": 2000,
+      "baskets": 20000
+    },
+    {
+      "support": 3,
+      "frequent_pairs": 250054,
+      "peak_counters": 893456,
+      "seconds": 6.773156599956565,
+      "peak_bytes": 156592388,
+      "items": 2000,
+      "baskets": 20000
+    },
+    {
+      "support": 1,
+      "frequent_pairs": 893456,
+      "peak_counters": 893456,
+      "seconds": 7.8788569999160245,
+      "peak_bytes": 327024500,
+      "items": 2000,
+      "baskets": 20000
+    }
+  ],
+  "machine": {
+    "platform": "Windows-11-10.0.26200-SP0",
+    "processor": "AMD64 Family 25 Model 117 Stepping 2, AuthenticAMD",
+    "python": "3.12.14",
+    "cpu": "AMD Ryzen 7 260 w/ Radeon 780M Graphics",
+    "ram_bytes": 33591296000,
+    "background": "Chrome, Codex/ChatGPT observed; background load not isolated"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "support": 3,
+  "items": 20000,
+  "baskets": 50000,
+  "average_draws": 60,
+  "seed": 246,
+  "frequent_items": 20000,
+  "processed_baskets": 12352,
+  "total_baskets": 50000,
+  "pass_two_seconds": 50.20265059999656,
+  "peak_pair_counters_observed": 11220932,
+  "traced_peak_bytes": 1633014356,
+  "completed": false,
+  "stop_reason": "1 GiB traced-allocation safety limit",
+  "input": "supplementary Zipf(0.8), cached CDF, without planted pairs",
+  "timing_scope": "pass two only; generation and pass one excluded",
+  "note": "An early-stop candidate count is a lower bound, not a complete frequent-pair answer."
+}

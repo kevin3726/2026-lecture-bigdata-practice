@@ -1,0 +1,9 @@
+{
+  "buckets": 16384,
+  "peak_counters": 820259,
+  "seconds": 4.023355299956165,
+  "frequent_buckets": 16384,
+  "bucket_array_bytes": 65616,
+  "bitmap_bytes": 2105,
+  "same_counts_and_pairs": true
+}
