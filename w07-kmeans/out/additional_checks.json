@@ -1,0 +1,7 @@
+{
+  "exact_small_graphless_point_cases": 16,
+  "random_cases": 12,
+  "ties_empty_clusters_coincident_centers": "passed",
+  "task1_tie_and_identical_point_initialization": "passed",
+  "benchmark_all_iteration_assignments_identical": true
+}

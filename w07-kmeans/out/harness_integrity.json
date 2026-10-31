@@ -1,0 +1,6 @@
+{
+  "bench.py": true,
+  "test_tasks.py": true,
+  "check.py": true,
+  "NaiveKMeans_and_means": true
+}

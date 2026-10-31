@@ -1,0 +1,16 @@
+{
+  "random": {
+    "success_sse_below_1": 27,
+    "trials": 40,
+    "min_sse": 0.11999999999999958,
+    "max_sse": 96.105,
+    "mean_sse": 31.31325
+  },
+  "++": {
+    "success_sse_below_1": 40,
+    "trials": 40,
+    "min_sse": 0.11999999999999958,
+    "max_sse": 0.11999999999999958,
+    "mean_sse": 0.11999999999999958
+  }
+}

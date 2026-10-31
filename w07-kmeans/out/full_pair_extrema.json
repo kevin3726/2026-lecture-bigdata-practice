@@ -1,0 +1,40 @@
+{
+  "runs": [
+    {
+      "points": 100,
+      "dim": 50,
+      "pairs": 4950,
+      "min": 2.0089226666256934,
+      "max": 3.6383341483794984,
+      "contrast": 0.8110872104851412,
+      "mean": 2.863761275216433,
+      "relative_stdev": 0.08070878230844808,
+      "seconds": 0.029406599991489202,
+      "method": "all pairs of nested prefixes"
+    },
+    {
+      "points": 300,
+      "dim": 50,
+      "pairs": 44850,
+      "min": 1.9055472270943066,
+      "max": 3.8513327030058733,
+      "contrast": 1.021116374469825,
+      "mean": 2.8701809370080023,
+      "relative_stdev": 0.08195033312883299,
+      "seconds": 0.2597461999976076,
+      "method": "all pairs of nested prefixes"
+    },
+    {
+      "points": 1000,
+      "dim": 50,
+      "pairs": 499500,
+      "min": 1.7003626841803385,
+      "max": 3.921189341250068,
+      "contrast": 1.3060899758219997,
+      "mean": 2.867506104137979,
+      "relative_stdev": 0.0828849939407309,
+      "seconds": 2.9128862000070512,
+      "method": "all pairs of nested prefixes"
+    }
+  ]
+}

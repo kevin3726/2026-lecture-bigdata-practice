@@ -81,7 +81,116 @@ class YourKMeans:
     """
 
     def __init__(self, k, max_iter=50):
-        raise NotImplementedError("write your k-means")
+        if k < 1 or max_iter < 1:
+            raise ValueError("k and max_iter must be positive")
+        self.k, self.max_iter = k, max_iter
 
     def run(self, points, initial_centroids, distance):
-        raise NotImplementedError
+        n,k = len(points),self.k
+        if len(initial_centroids)!=k:
+            raise ValueError("need k initial centroids")
+        centroids=list(initial_centroids)
+        labels=[None]*n
+        upper=[float("inf")]*n
+        lower=[[0.0]*k for _ in points]
+        self.calls=0
+        self.per_iteration_calls=[]
+        self.skipped_points=0
+        self.lower_bound_skips=0
+        self.separation_skips=0
+        self.tighten_calls=0
+        self.tie_fallbacks=0
+        self.first_assignment_calls=0
+        def dist(a,b):
+            self.calls+=1
+            return distance(a,b)
+        for self.iterations in range(1,self.max_iter+1):
+            before=self.calls
+            changed=False
+            if self.iterations==1:
+                for i,p in enumerate(points):
+                    ds=[dist(p,c) for c in centroids]
+                    best,bi=None,0
+                    for j,d in enumerate(ds):
+                        if best is None or d<best-1e-12:
+                            best,bi=d,j
+                    labels[i]=bi
+                    upper[i]=ds[bi]
+                    lower[i]=ds
+                changed=bool(n)
+                self.first_assignment_calls=self.calls
+            else:
+                separation=[[0.0]*k for _ in range(k)]
+                half_nearest=[float("inf")]*k
+                for a in range(k):
+                    for b in range(a+1,k):
+                        half=dist(centroids[a],centroids[b])/2
+                        separation[a][b]=separation[b][a]=half
+                        half_nearest[a]=min(half_nearest[a],half)
+                        half_nearest[b]=min(half_nearest[b],half)
+                for i,p in enumerate(points):
+                    a=labels[i]
+                    # Conservative strict comparisons protect ties/rounding.
+                    margin=1e-10*(1+upper[i])
+                    if upper[i]+margin<half_nearest[a]:
+                        self.skipped_points+=1
+                        continue
+                    exact=False
+                    measured={}
+                    best=upper[i]
+                    bi=a
+                    ambiguous=False
+                    for j in range(k):
+                        if j==bi:
+                            continue
+                        if best+margin<lower[i][j]:
+                            self.lower_bound_skips+=1
+                            continue
+                        if best+margin<separation[bi][j]:
+                            self.separation_skips+=1
+                            continue
+                        if not exact:
+                            best=dist(p,centroids[bi])
+                            self.tighten_calls+=1
+                            measured[bi]=best
+                            lower[i][bi]=best
+                            exact=True
+                            if best+margin<lower[i][j]:
+                                self.lower_bound_skips+=1
+                                continue
+                            if best+margin<separation[bi][j]:
+                                self.separation_skips+=1
+                                continue
+                        d=dist(p,centroids[j])
+                        measured[j]=d
+                        lower[i][j]=d
+                        if abs(d-best)<=margin:
+                            ambiguous=True
+                        if d<best-1e-12:
+                            best,bi=d,j
+                    if ambiguous:
+                        # Match the baseline's ascending-index epsilon comparator,
+                        # rather than imposing a different fuzzy tie convention.
+                        self.tie_fallbacks+=1
+                        ds=[measured[j] if j in measured else dist(p,centroids[j])
+                            for j in range(k)]
+                        best,bi=None,0
+                        for j,d in enumerate(ds):
+                            if best is None or d<best-1e-12:
+                                best,bi=d,j
+                        lower[i]=ds
+                    if labels[i]!=bi:
+                        changed=True
+                    labels[i]=bi
+                    upper[i]=best
+            new_centroids=_means(points,labels,k,centroids)
+            if changed and self.iterations<self.max_iter:
+                movement=[dist(a,b) for a,b in zip(centroids,new_centroids)]
+                for i in range(n):
+                    upper[i]+=movement[labels[i]]
+                    lower[i]=[max(0.0,bound-move) for bound,move in zip(lower[i],movement)]
+            centroids=new_centroids
+            self.per_iteration_calls.append(self.calls-before)
+            if not changed:
+                break
+        return labels,centroids
